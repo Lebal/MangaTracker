@@ -2,7 +2,10 @@ package com.tracker.filip.mangatracker;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        ListView mangaEntryList = (ListView) findViewById(R.id.customListView);
+        final ListView mangaEntryList = (ListView) findViewById(R.id.customListView);
         MangaEntryAdapter mangaEntryAdapter = new MangaEntryAdapter(this,R.layout.list_layout);
         mangaEntryList.setAdapter(mangaEntryAdapter);
 
@@ -23,6 +26,15 @@ public class MainActivity extends AppCompatActivity {
 
             mangaEntryAdapter.add(entry);
         }
+
+        mangaEntryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                MangaEntry o = (MangaEntry) mangaEntryList.getItemAtPosition(position);
+                Toast.makeText(getBaseContext(),o.getName() + " " + o.getChapter(),Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private List<MangaEntry> getMangaEntries() {
