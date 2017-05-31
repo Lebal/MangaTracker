@@ -4,13 +4,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements InputFragment.InputListener{
+
+    MangaEntryAdapter mangaEntryAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,9 +21,36 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+        final Button addEntry =(Button) findViewById(R.id.addEntry);
+
+        addEntry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addEntry(v);
+            }
+        });
+
+
+
+
+
+
+
+
+
         final ListView mangaEntryList = (ListView) findViewById(R.id.customListView);
-        MangaEntryAdapter mangaEntryAdapter = new MangaEntryAdapter(this,R.layout.list_layout);
+        mangaEntryAdapter = new MangaEntryAdapter(this,R.layout.list_layout);
         mangaEntryList.setAdapter(mangaEntryAdapter);
+
+
+
+
+
+
+
+
+
+
 
         for(MangaEntry entry: getMangaEntries()){
 
@@ -56,5 +86,20 @@ public class MainActivity extends AppCompatActivity {
 
         return entries;
 
+    }
+
+
+    private void addEntry(View v){
+
+        InputFragment inFrag = new InputFragment();
+
+        inFrag.show(getSupportFragmentManager(),"Input fragment");
+
+    }
+
+    @Override
+    public void onClick(MangaEntry entry) {
+        Toast.makeText(getBaseContext(),"Added",Toast.LENGTH_SHORT).show();
+        mangaEntryAdapter.add(entry);
     }
 }
