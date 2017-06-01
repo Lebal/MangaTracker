@@ -25,8 +25,9 @@ public class MangaEntryAdapter extends ArrayAdapter<MangaEntry>{
     }
 
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         final View view = getWorkingView(convertView);
         final ViewHolder viewHolder = getViewHolder(view);
         final MangaEntry entry = getItem(position);
@@ -66,7 +67,7 @@ public class MangaEntryAdapter extends ArrayAdapter<MangaEntry>{
 
         Object tag = workingView.getTag();
 
-        ViewHolder viewHolder = null;
+        ViewHolder viewHolder;
 
         if(null == tag || !(tag instanceof ViewHolder)){
 
@@ -89,8 +90,8 @@ public class MangaEntryAdapter extends ArrayAdapter<MangaEntry>{
 
     private static class ViewHolder{
 
-        public TextView titleView;
-        public TextView chapterView;
-        public ImageView imageView;
+        TextView titleView;
+        TextView chapterView;
+        ImageView imageView;
     }
 }

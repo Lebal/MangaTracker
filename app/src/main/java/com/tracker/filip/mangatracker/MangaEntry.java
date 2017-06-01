@@ -9,6 +9,7 @@ public class MangaEntry {
     private String name;
     private int chapter;
     private int picture;
+    private int _id;
 
     public MangaEntry(String name, int chapter, int picture) {
         this.name = name;
@@ -38,5 +39,13 @@ public class MangaEntry {
 
     public void setPicture(int picture) {
         this.picture = picture;
+    }
+
+    public int get_id() {
+        return _id;
+    }
+
+    public void set_id(int _id) {
+        this._id = _id;
     }
 }
