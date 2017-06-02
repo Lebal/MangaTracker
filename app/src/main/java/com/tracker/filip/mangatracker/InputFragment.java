@@ -67,7 +67,7 @@ public class InputFragment extends DialogFragment{
                 startActivityForResult(i,RESULT_LOAD_IMAGE);
             }
         });
-        mangaImage.setImageResource(R.drawable.aot);
+        mangaImage.setImageResource(android.R.drawable.ic_menu_gallery);
 
 
 
