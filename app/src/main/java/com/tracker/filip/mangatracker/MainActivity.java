@@ -21,8 +21,6 @@ public class MainActivity extends AppCompatActivity implements InputFragment.Inp
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         final Button addEntry =(Button) findViewById(R.id.addEntry);
         dbHandler = new MyDBHandler(this,null,null,1);
 
@@ -46,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.Inp
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 MangaEntry o = (MangaEntry) mangaEntryList.getItemAtPosition(position);
-                Toast.makeText(getBaseContext(),"Removed: "+ o.getName() + " " + o.getChapter(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(),"Removed: "+ o.getName() + " " + o.getChapter() + " " + o.getPicture(),Toast.LENGTH_SHORT).show();
                 dbHandler.removeEntry(o);
                 mangaEntryAdapter.remove(o);
 

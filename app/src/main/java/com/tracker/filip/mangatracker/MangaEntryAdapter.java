@@ -1,6 +1,8 @@
 package com.tracker.filip.mangatracker;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -11,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.File;
 
 /**
  * Created by Filip on 2017-05-31.
@@ -36,7 +40,14 @@ public class MangaEntryAdapter extends ArrayAdapter<MangaEntry>{
 
         viewHolder.chapterView.setText(entry.getChapter()+"");
 
-        viewHolder.imageView.setImageResource(entry.getPicture());
+
+        File imgFile = new  File(entry.getPicture());
+        if(imgFile.exists()){
+
+            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            viewHolder.imageView.setImageBitmap(myBitmap);
+
+        }
 
         return view;
     }

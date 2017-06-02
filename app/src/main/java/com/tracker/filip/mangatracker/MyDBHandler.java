@@ -17,7 +17,7 @@ import java.util.List;
 
 public class MyDBHandler extends SQLiteOpenHelper{
 
-    private static final int DATABASE_VERSION =1;
+    private static final int DATABASE_VERSION =2;
     private static final String DATABASE_NAME="entries.db";
     public static final String TABLE_ENTRIES ="entries";
     public static final String COLUMN_ID ="_id";
@@ -38,7 +38,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_NAME + " TEXT, " +
                 COLUMN_CHAPTER + " INTEGER, " +
-                COLUMN_PICTURE + " INTEGER "
+                COLUMN_PICTURE + " STRING "
                 +");";
 
         db.execSQL(query);
@@ -88,7 +88,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
         while (!c.isAfterLast()){
 
             if (c.moveToNext()){
-                list.add(new MangaEntry(c.getString(c.getColumnIndex("name")), c.getInt(c.getColumnIndex("chapter")),c.getInt(c.getColumnIndex("picture")) ));
+                list.add(new MangaEntry(c.getString(c.getColumnIndex("name")), c.getInt(c.getColumnIndex("chapter")),c.getString(c.getColumnIndex("picture")) ));
 
             }
 

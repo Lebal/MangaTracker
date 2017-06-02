@@ -8,13 +8,13 @@ public class MangaEntry {
 
     private String name;
     private int chapter;
-    private int picture;
+    private String picturePath;
     private int _id;
 
-    public MangaEntry(String name, int chapter, int picture) {
+    public MangaEntry(String name, int chapter, String picture) {
         this.name = name;
         this.chapter = chapter;
-        this.picture = picture;
+        this.picturePath = picture;
     }
 
     public String getName() {
@@ -33,12 +33,12 @@ public class MangaEntry {
         this.chapter = chapter;
     }
 
-    public int getPicture() {
-        return picture;
+    public String getPicture() {
+        return picturePath;
     }
 
-    public void setPicture(int picture) {
-        this.picture = picture;
+    public void setPicture(String picture) {
+        this.picturePath = picture;
     }
 
     public int get_id() {
