@@ -3,10 +3,7 @@ package com.tracker.filip.mangatracker;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.annotation.IdRes;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,15 +45,17 @@ public class MangaEntryAdapter extends ArrayAdapter<MangaEntry>{
             viewHolder.imageView.setImageBitmap(myBitmap);
 
         }
-
+        else {
+            viewHolder.imageView.setImageResource(android.R.drawable.ic_menu_gallery);
+        }
         return view;
     }
 
 
+
     private View getWorkingView(View convertView){
 
-        View workingView=null;
-
+        View workingView;
         if(null==convertView){
 
             Context context = getContext();
