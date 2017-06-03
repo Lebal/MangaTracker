@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements InputFragment.InputListener{
@@ -37,6 +38,12 @@ public class MainActivity extends AppCompatActivity implements InputFragment.Inp
         mangaEntryList.setAdapter(mangaEntryAdapter);
 
         updateEntries();
+        mangaEntryAdapter.sort(new Comparator<MangaEntry>() {
+            @Override
+            public int compare(MangaEntry o1, MangaEntry o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
 
         mangaEntryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -70,6 +77,12 @@ public class MainActivity extends AppCompatActivity implements InputFragment.Inp
     public void onClick(MangaEntry entry) {
         Toast.makeText(getBaseContext(),"Added",Toast.LENGTH_SHORT).show();
         mangaEntryAdapter.add(entry);
+        mangaEntryAdapter.sort(new Comparator<MangaEntry>() {
+            @Override
+            public int compare(MangaEntry o1, MangaEntry o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
         dbHandler.addEntry(entry);
     }
 

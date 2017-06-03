@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -99,8 +100,10 @@ public class InputFragment extends DialogFragment{
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             picturePath = cursor.getString(columnIndex);
             cursor.close();
-
-            mangaImage.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+            Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            BitmapFactory.decodeFile(picturePath,options);
+            mangaImage.setImageBitmap(bitmap);
 
             // String picturePath contains the path of selected Image
         }
