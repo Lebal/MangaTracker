@@ -11,7 +11,7 @@ import android.widget.Toast;
 import java.util.Comparator;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements InputFragment.InputListener{
+public class MainActivity extends AppCompatActivity implements InputFragment.InputListener,EditFragment.UpdateListener {
 
     MangaEntryAdapter mangaEntryAdapter;
     MyDBHandler dbHandler;
@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity implements InputFragment.Inp
         final Button addEntry =(Button) findViewById(R.id.addEntry);
         dbHandler = new MyDBHandler(this,null,null,1);
 
-
         addEntry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -32,58 +31,64 @@ public class MainActivity extends AppCompatActivity implements InputFragment.Inp
             }
         });
 
-
         final ListView mangaEntryList = (ListView) findViewById(R.id.customListView);
         mangaEntryAdapter = new MangaEntryAdapter(this,R.layout.list_layout);
         mangaEntryList.setAdapter(mangaEntryAdapter);
 
         updateEntries();
-        mangaEntryAdapter.sort(new Comparator<MangaEntry>() {
-            @Override
-            public int compare(MangaEntry o1, MangaEntry o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+        sortAdapter();
 
         mangaEntryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 MangaEntry o = (MangaEntry) mangaEntryList.getItemAtPosition(position);
-                Toast.makeText(getBaseContext(),"Removed: "+ o.getName() + " " + o.getChapter() + " " + o.getPicture(),Toast.LENGTH_SHORT).show();
-                dbHandler.removeEntry(o);
-                mangaEntryAdapter.remove(o);
-
+                updateEntry(o);
             }
         });
     }
 
     private List<MangaEntry> getMangaEntries() {
-
         return dbHandler.databaseToList();
 
     }
 
 
     private void addEntry(View v){
-
         InputFragment inFrag = new InputFragment();
-
         inFrag.show(getSupportFragmentManager(),"Input fragment");
+    }
+
+    private void updateEntry(MangaEntry entry){
+
+        EditFragment editFrag = new EditFragment(entry);
+        editFrag.show(getSupportFragmentManager(),"Edit fragment");
 
     }
 
     @Override
     public void onClick(MangaEntry entry) {
         Toast.makeText(getBaseContext(),"Added",Toast.LENGTH_SHORT).show();
+
         mangaEntryAdapter.add(entry);
-        mangaEntryAdapter.sort(new Comparator<MangaEntry>() {
-            @Override
-            public int compare(MangaEntry o1, MangaEntry o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+        sortAdapter();
         dbHandler.addEntry(entry);
+    }
+
+    @Override
+    public void onClickUpdate(MangaEntry entry1, MangaEntry entry2) {
+        mangaEntryAdapter.remove(entry2);
+        dbHandler.removeEntry(entry2);
+
+        mangaEntryAdapter.add(entry1);
+        sortAdapter();
+        dbHandler.addEntry(entry1);
+    }
+
+    @Override
+    public void removeEntry(MangaEntry entry) {
+        mangaEntryAdapter.remove(entry);
+        sortAdapter();
+        dbHandler.removeEntry(entry);
     }
 
     private void updateEntries(){
@@ -94,5 +99,15 @@ public class MainActivity extends AppCompatActivity implements InputFragment.Inp
 
     }
 
+    private void sortAdapter(){
+
+        mangaEntryAdapter.sort(new Comparator<MangaEntry>() {
+            @Override
+            public int compare(MangaEntry o1, MangaEntry o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+
+    }
 
 }

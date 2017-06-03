@@ -1,5 +1,6 @@
 package com.tracker.filip.mangatracker;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -10,11 +11,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.BlockedNumberContract;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -26,18 +29,27 @@ import static android.app.Activity.RESULT_OK;
  * Created by Filip on 2017-06-01.
  */
 
-public class InputFragment extends DialogFragment{
+@SuppressLint("ValidFragment")
+public class EditFragment extends DialogFragment{
 
     private static int RESULT_LOAD_IMAGE = 1;
     ImageView mangaImage;
     String picturePath ="";
+    private MangaEntry entryLocal;
 
-    public interface InputListener{
-        void onClick(MangaEntry entry);
+    public interface UpdateListener {
+        void onClickUpdate(MangaEntry entry1, MangaEntry entry2);
+        void removeEntry(MangaEntry entry);
     }
 
+    private UpdateListener updateListener;
 
-    private InputListener inputListener;
+    @SuppressLint("ValidFragment")
+    public EditFragment(MangaEntry entry) {
+        super();
+        entryLocal = entry;
+
+    }
 
     @Override
     public void onAttach(Context context){
@@ -46,7 +58,7 @@ public class InputFragment extends DialogFragment{
         try {
             Activity activity = (Activity) context;
 
-            inputListener = (InputListener) activity;
+            updateListener = (UpdateListener) activity;
         }
         catch (ClassCastException e){
 
@@ -55,14 +67,18 @@ public class InputFragment extends DialogFragment{
     }
 
 
+
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceBundle){
+    public Dialog onCreateDialog(Bundle savedInstance){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        final View view = (LayoutInflater.from(getActivity())).inflate(R.layout.update_layout,null);
+        final View view = (LayoutInflater.from(getActivity())).inflate(R.layout.input_layout,null);
+
 
         final EditText titleInput = (EditText) view.findViewById(R.id.titleInput);
+        titleInput.setText(entryLocal.getName()+"");
         final EditText chapterInput = (EditText) view.findViewById(R.id.chapterInput);
+        chapterInput.setText(entryLocal.getChapter()+"");
 
         mangaImage = (ImageView) view.findViewById(R.id.mangaImage);
         mangaImage.setOnClickListener(new View.OnClickListener() {
@@ -72,22 +88,37 @@ public class InputFragment extends DialogFragment{
                 startActivityForResult(i,RESULT_LOAD_IMAGE);
             }
         });
-        mangaImage.setImageResource(android.R.drawable.ic_menu_gallery);
 
+        File imgFile = new  File(entryLocal.getPicture());
+        if(imgFile.exists()){
+            picturePath = imgFile.getPath();
+            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            mangaImage.setImageBitmap(myBitmap);
 
+        }
+        else {
+            mangaImage.setImageResource(android.R.drawable.ic_menu_gallery);
+        }
 
         builder.setTitle("Input title and chapter").setView(view).setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String title = titleInput.getText().toString();
                 int chapter = Integer.parseInt(chapterInput.getText().toString());
-                inputListener.onClick(new MangaEntry(title,chapter,picturePath));
+                updateListener.onClickUpdate(new MangaEntry(title,chapter,picturePath), entryLocal);
             }
-        }).setCancelable(true);
+        }).setCancelable(true).setNegativeButton("Remove", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                updateListener.removeEntry(entryLocal);
+            }
+        }).setNeutralButton("Cancel",null);
+
 
         return builder.create();
-    }
 
+
+    }
 
 
     @Override

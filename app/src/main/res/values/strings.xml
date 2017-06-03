@@ -3,4 +3,6 @@
     <string name="add_entry">Add entry</string>
     <string name="chapter" >Chapter</string>
     <string name="title">Title</string>
+    <string name="removeEntry">Remove Entry</string>
+    <string name="updateEntry">Update Entry</string>
 </resources>
