@@ -74,6 +74,16 @@ public class MyDBHandler extends SQLiteOpenHelper{
 
     }
 
+    public void updateEntry(MangaEntry oldEntry, MangaEntry newEntry){
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        String query = "UPDATE " + TABLE_ENTRIES + " SET " + COLUMN_NAME+ " =\"" + newEntry.getName()+ "\", "  +COLUMN_CHAPTER + "=" + newEntry.getChapter() + ", " + COLUMN_PICTURE + "=\"" +newEntry.getPicture()+
+                "\" WHERE " +  COLUMN_NAME + " =\"" +oldEntry.getName() + "\" AND " + COLUMN_CHAPTER + "=" +oldEntry.getChapter() +" AND " + COLUMN_PICTURE + "=\"" + oldEntry.getPicture() + "\";" ;
+
+        db.execSQL(query);
+    }
+
 
     public List<MangaEntry> databaseToList(){
         List<MangaEntry> list= new ArrayList<>();

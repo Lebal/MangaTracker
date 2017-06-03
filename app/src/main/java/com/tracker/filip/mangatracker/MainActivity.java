@@ -34,6 +34,15 @@ public class MainActivity extends AppCompatActivity implements InputFragment.Inp
         final ListView mangaEntryList = (ListView) findViewById(R.id.customListView);
         mangaEntryAdapter = new MangaEntryAdapter(this,R.layout.list_layout);
         mangaEntryList.setAdapter(mangaEntryAdapter);
+        mangaEntryList.setLongClickable(true);
+        mangaEntryList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                MangaEntry o = (MangaEntry) mangaEntryList.getItemAtPosition(position);
+                updateEntry(o);
+                return true;
+            }
+        });
 
         updateEntries();
         sortAdapter();
@@ -42,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.Inp
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MangaEntry o = (MangaEntry) mangaEntryList.getItemAtPosition(position);
-                updateEntry(o);
+                updateEntryChapter(o);
             }
         });
     }
@@ -96,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements InputFragment.Inp
 
             mangaEntryAdapter.add(entry);
         }
+        sortAdapter();
 
     }
 
@@ -107,6 +117,18 @@ public class MainActivity extends AppCompatActivity implements InputFragment.Inp
                 return o1.getName().compareTo(o2.getName());
             }
         });
+
+    }
+
+    private void updateEntryChapter(MangaEntry entry){
+
+        MangaEntry entry1 = entry;
+        entry1.setChapter(entry1.getChapter() +1);
+        dbHandler.updateEntry(entry,entry1);
+        mangaEntryAdapter.remove(entry);
+
+        mangaEntryAdapter.add(entry1);
+        sortAdapter();
 
     }
 
