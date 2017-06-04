@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -79,8 +80,19 @@ public class InputFragment extends DialogFragment{
         builder.setTitle("Input title and chapter").setView(view).setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String title = titleInput.getText().toString();
-                int chapter = Integer.parseInt(chapterInput.getText().toString());
+
+                String title = "";
+                int chapter = 0;
+                try {
+                    title = titleInput.getText().toString();
+                    chapter = Integer.parseInt(chapterInput.getText().toString());
+                }catch (NumberFormatException e){
+
+                    Toast.makeText(getContext(), "Enter a valid number", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+
                 inputListener.onClick(new MangaEntry(title,chapter,picturePath));
             }
         }).setCancelable(true);
