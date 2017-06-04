@@ -86,11 +86,11 @@ public class MainActivity extends AppCompatActivity implements InputFragment.Inp
     @Override
     public void onClickUpdate(MangaEntry entry1, MangaEntry entry2) {
         mangaEntryAdapter.remove(entry2);
-        dbHandler.removeEntry(entry2);
-
+        //dbHandler.removeEntry(entry2);
         mangaEntryAdapter.add(entry1);
         sortAdapter();
-        dbHandler.addEntry(entry1);
+        dbHandler.updateEntry(entry2,entry1);
+        //dbHandler.addEntry(entry1);
     }
 
     @Override
@@ -122,11 +122,12 @@ public class MainActivity extends AppCompatActivity implements InputFragment.Inp
 
     private void updateEntryChapter(MangaEntry entry){
 
-        MangaEntry entry1 = entry;
-        entry1.setChapter(entry1.getChapter() +1);
+        MangaEntry entry1 = new MangaEntry(entry.getName(),entry.getChapter()+1,entry.getPicture());
         dbHandler.updateEntry(entry,entry1);
+        //dbHandler.removeEntry(entry);
         mangaEntryAdapter.remove(entry);
 
+        //dbHandler.addEntry(entry1);
         mangaEntryAdapter.add(entry1);
         sortAdapter();
 

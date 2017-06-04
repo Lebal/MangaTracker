@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
 
 public class MyDBHandler extends SQLiteOpenHelper{
 
-    private static final int DATABASE_VERSION =2;
+    private static final int DATABASE_VERSION =5;
     private static final String DATABASE_NAME="entries.db";
     public static final String TABLE_ENTRIES ="entries";
     public static final String COLUMN_ID ="_id";
@@ -40,48 +41,80 @@ public class MyDBHandler extends SQLiteOpenHelper{
                 COLUMN_PICTURE + " STRING "
                 +");";
 
-        db.execSQL(query);
+        SQLiteStatement stmt = db.compileStatement(query);
+        stmt.execute();
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENTRIES);
+        String query = "DROP TABLE IF EXISTS " + TABLE_ENTRIES;
+        SQLiteStatement stmt = db.compileStatement(query);
+        stmt.execute();
         onCreate(db);
     }
 
 
-    public void addEntry(MangaEntry entry){
+    public long addEntry(MangaEntry entry){
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "INSERT INTO " + TABLE_ENTRIES + " ("+COLUMN_NAME+","+COLUMN_CHAPTER+","+COLUMN_PICTURE+") VALUES (?,?,?);";
+        SQLiteStatement stmt = db.compileStatement(query);
 
-        ContentValues values = new ContentValues();
+        stmt.bindString(1,entry.getName());
+        stmt.bindLong(2,entry.getChapter());
+        stmt.bindString(3,entry.getPicture());
 
-        values.put(COLUMN_NAME,entry.getName());
-        values.put(COLUMN_CHAPTER,entry.getChapter());
-        values.put(COLUMN_PICTURE,entry.getPicture());
+        long rowID = stmt.executeInsert();
+        return rowID;
+
+    }
+
+    public int removeEntry(MangaEntry entry){
 
         SQLiteDatabase db = getWritableDatabase();
-        db.insert(TABLE_ENTRIES,null,values);
+        String query =
+                "DELETE FROM " + TABLE_ENTRIES +
+                " WHERE " +
+                COLUMN_NAME + " = ? AND " + COLUMN_CHAPTER +"=? AND " + COLUMN_PICTURE + "=?;";
+
+        SQLiteStatement stmt = db.compileStatement(query);
+        stmt.bindString(1,entry.getName());
+        stmt.bindLong(2,entry.getChapter());
+        stmt.bindString(3,entry.getPicture());
+
+        int numberOfRowsAffected = stmt.executeUpdateDelete();
+
         db.close();
-    }
+        stmt.close();
 
-    public void removeEntry(MangaEntry entry){
-
-        SQLiteDatabase db = getWritableDatabase();
-
-        String query = "DELETE FROM " + TABLE_ENTRIES + " WHERE " + COLUMN_NAME + " =\"" +entry.getName() + "\"" + " AND " + COLUMN_CHAPTER +"=\"" + entry.getChapter() + "\"" +" AND "
-                + COLUMN_PICTURE + "=\"" + entry.getPicture() + "\";";
-        db.execSQL(query);
+        return numberOfRowsAffected;
 
     }
 
-    public void updateEntry(MangaEntry oldEntry, MangaEntry newEntry){
+    public int updateEntry(MangaEntry oldEntry, MangaEntry newEntry){
 
         SQLiteDatabase db = getWritableDatabase();
 
-        String query = "UPDATE " + TABLE_ENTRIES + " SET " + COLUMN_NAME+ " =\"" + newEntry.getName()+ "\", "  +COLUMN_CHAPTER + "=" + newEntry.getChapter() + ", " + COLUMN_PICTURE + "=\"" +newEntry.getPicture()+
-                "\" WHERE " +  COLUMN_NAME + " =\"" +oldEntry.getName() + "\" AND " + COLUMN_CHAPTER + "=" +oldEntry.getChapter() +" AND " + COLUMN_PICTURE + "=\"" + oldEntry.getPicture() + "\";" ;
+        String query = "UPDATE " + TABLE_ENTRIES +
+                " SET " + COLUMN_NAME + " =?, "  +COLUMN_CHAPTER + "=?, " + COLUMN_PICTURE +
+                "=? WHERE "
+                +  COLUMN_NAME + " =? AND " + COLUMN_CHAPTER + "=? AND " + COLUMN_PICTURE + "=?;";
 
-        db.execSQL(query);
+        SQLiteStatement stmt = db.compileStatement(query);
+
+        stmt.bindString(1,newEntry.getName());;
+        stmt.bindLong(2,newEntry.getChapter());
+        stmt.bindString(3,newEntry.getPicture());
+
+        stmt.bindString(4,oldEntry.getName());;
+        stmt.bindLong(5,oldEntry.getChapter());
+        stmt.bindString(6,oldEntry.getPicture());
+
+        int numberOfRowsAffected = stmt.executeUpdateDelete();
+
+        db.close();
+        stmt.close();
+        return numberOfRowsAffected;
     }
 
 
@@ -92,7 +125,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
 
 
         Cursor c = db.rawQuery(query,null);
-        c.moveToFirst();
+        //c.moveToFirst();
 
         while (!c.isAfterLast()){
 
